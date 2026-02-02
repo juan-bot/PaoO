@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Para ti, con muchísimo cariño 💌</title>
+  <meta name="description" content="Carta interactiva para animarte hoy. Hecha con amor, con recordatorios suaves y herramientas para sentirte mejor y avanzar con calma." />
+  <style>
+    :root{
+      --bg:#fff7fb; /* rosa muy suave */
+      --ink:#2b2b2b;
+      --ink-muted:#5a5a5a;
+      --rose:#f59fb6;
+      --rose-strong:#e66794;
+      --lav:#c8b6ff;
+      --mint:#b6f0d0;
+      --gold:#ffeaa7;
+      --card:#ffffff;
+      --shadow:0 10px 30px rgba(0,0,0,.08);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+      color:var(--ink); background:linear-gradient(180deg,var(--bg),#ffffff);
+      overflow-x:hidden;
+    }
+    header{
+      position:sticky; top:0; z-index:20; backdrop-filter:saturate(120%) blur(8px);
+      background:linear-gradient(180deg,rgba(255,247,251,.85),rgba(255,255,255,.5));
+      border-bottom:1px solid rgba(0,0,0,.05);
+    }
+    .wrap{max-width:980px; margin:0 auto; padding:18px 18px}
+    .hero{display:grid; gap:18px; align-items:center; grid-template-columns: 1.1fr .9fr;}
+    @media (max-width:900px){.hero{grid-template-columns:1fr;}}
+    .card{
+      background:var(--card); border:1px solid rgba(0,0,0,.06); border-radius:var(--radius); box-shadow:var(--shadow);
+    }
+    .pad{padding:22px}
+    h1{font-size:clamp(28px,3.5vw,40px); line-height:1.1; margin:6px 0 10px}
+    h2{font-size:clamp(22px,2.2vw,28px); margin:0 0 12px}
+    p{margin:0 0 12px; color:var(--ink-muted)}
+    .tag{display:inline-flex; align-items:center; gap:8px; padding:6px 10px; background:#fff1f6; color:#b11f64; border-radius:999px; font-weight:600; font-size:13px}
+
+    /* Floating hearts background */
+    .floaty{position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden}
+    .heart{position:absolute; width:14px; height:14px; transform: rotate(45deg); background:linear-gradient(135deg,var(--rose),var(--rose-strong)); opacity:.22; animation: rise 12s linear infinite;}
+    .heart::before,.heart::after{content:""; position:absolute; width:14px; height:14px; border-radius:50%; background:inherit}
+    .heart::before{left:-7px}
+    .heart::after{top:-7px}
+    @keyframes rise{from{transform:translateY(110vh) rotate(45deg); opacity:.05} to{transform:translateY(-10vh) rotate(45deg); opacity:.35}}
+
+    /* Envelope opener */
+    .envelope{position:relative; display:grid; place-items:center; aspect-ratio: 9/5; background:linear-gradient(180deg,#ffe5ef,#ffd1e3); border-radius:20px; border:1px solid rgba(0,0,0,.06); box-shadow:var(--shadow); cursor:pointer;}
+    .envelope .flap{position:absolute; width:90%; height:60%; top:-5%; background:linear-gradient(180deg,#ffd6e6,#ffc0d6); clip-path:polygon(0 0,100% 0,50% 100%); border-radius:12px; transition: transform .9s cubic-bezier(.2,.9,.2,1)}
+    .envelope.open .flap{transform:rotateX(160deg)}
+    .envelope .stamp{position:absolute; right:16px; top:16px; width:54px; height:54px; background:radial-gradient(circle at 30% 30%, #fff 10%, #ffc4d7 40%, #f59fb6 100%); border-radius:12px; box-shadow:inset 0 0 0 6px rgba(255,255,255,.6)}
+    .envelope .cta{font-weight:700; background:white; padding:10px 16px; border-radius:999px; border:1px dashed rgba(0,0,0,.12); box-shadow:var(--shadow)}
+
+    .letter{display:none}
+    .letter.show{display:block; animation:pop .4s ease}
+    @keyframes pop{from{transform:scale(.97); opacity:.7}to{transform:scale(1); opacity:1}}
+
+    /* Buttons */
+    .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:10px 14px; border-radius:14px; border:1px solid rgba(0,0,0,.08); background:#fff; cursor:pointer; transition: transform .05s ease, box-shadow .2s ease; box-shadow: 0 2px 0 rgba(0,0,0,.08)}
+    .btn:hover{box-shadow:var(--shadow)}
+    .btn:active{transform:translateY(1px)}
+    .btn.primary{background:linear-gradient(180deg,#ffd8e8,#ffc1db); border-color:#ffc1db}
+    .btn.ghost{background:transparent}
+    .cluster{display:flex; flex-wrap:wrap; gap:10px}
+
+    /* Sections */
+    .grid{display:grid; gap:18px; grid-template-columns:1fr 1fr}
+    @media (max-width:900px){.grid{grid-template-columns:1fr}}
+
+    .divider{height:1px; background:linear-gradient(90deg,transparent,rgba(0,0,0,.08),transparent); margin:10px 0}
+
+    /* Checklist */
+    .todo-item{display:flex; align-items:center; gap:12px; padding:10px; border-radius:14px; border:1px solid rgba(0,0,0,.06); background:#fff}
+    .todo-item input{transform:scale(1.3)}
+    .todo-item.done{background:linear-gradient(90deg,#f1fff6,#ffffff)}
+
+    .progress{height:10px; background:#ffe3ef; border-radius:999px; overflow:hidden}
+    .progress > span{display:block; height:100%; width:0; background:linear-gradient(90deg,var(--lav),var(--rose)); transition:width .4s ease}
+
+    /* Timer */
+    .timer{display:grid; place-items:center; gap:10px}
+    .dial{--pct:0; width:160px; height:160px; border-radius:50%; background:conic-gradient(var(--rose-strong) calc(var(--pct)*1%), #f1f1f1 0); display:grid; place-items:center}
+    .dial .inner{width:120px; height:120px; border-radius:50%; background:#fff; display:grid; place-items:center; font-weight:800; font-size:28px}
+
+    /* Breathing */
+    .breath{display:grid; gap:8px; place-items:center}
+    .bubble{width:120px; height:120px; border-radius:50%; background:radial-gradient(circle at 40% 30%, #fff 10%, #ffeaf2 40%, #ffcfe1 100%); animation: breathe 8s ease-in-out infinite}
+    @keyframes breathe{0%{transform:scale(1)} 50%{transform:scale(1.15)} 100%{transform:scale(1)}}
+
+    /* Footer note */
+    footer{opacity:.8; font-size:13px; text-align:center; padding:30px}
+
+    /* Confetti hearts on complete */
+    .confetti{position:fixed; inset:0; pointer-events:none}
+  </style>
+</head>
+<body>
+  <div class="floaty" aria-hidden="true" id="floaty"></div>
+  <header>
+    <div class="wrap" style="display:flex; align-items:center; justify-content:space-between; gap:14px">
+      <div class="tag">💖 Carta con amor</div>
+      <div class="cluster">
+        <button class="btn ghost" id="toggleTheme" title="Cambiar fondo">🌙/🌞</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="card pad">
+        <h1>Para ti mi Paola hermosa, que hoy mereces suavidad 🌷</h1>
+        <p>Si estás con malestares del periodo, con dudas del rumbo profesional, con la tesis tocando la puerta y la mente haciendo maromas… respira. Esta página es un abrazo.
+        Aquí hay palabras, herramientas pequeñitas y recordatorios amables para hoy, no para siempre. Paso a pasito.</p>
+        <div class="cluster" style="margin-top:10px">
+          <button class="btn primary" id="openLetter">Abrir carta 💌</button>
+          <button class="btn" id="randomPraise">Dime algo bonito ✨</button>
+        </div>
+      </div>
+      <div class="envelope card" id="envelope" role="button" aria-label="Abrir carta">
+        <div class="flap"></div>
+        <div class="stamp" aria-hidden="true"></div>
+        <div class="cta">Toca para abrir</div>
+      </div>
+    </section>
+
+    <section class="letter card pad" id="letter">
+      <h2>Carta para un día sensible</h2>
+      <p>Hoy no necesitas ser productiva para ser valiosa. Eres suficiente por existir, por sentir, por cuidar. Tu cuerpo está trabajando extra; dale permiso de ir lento. Puedes poner límites, pedir pausas y elegirte a ti.</p>
+      <p>Tu talento como docente abre mundos. Aunque el rumbo aún no esté clarísimo, tu brújula interna actúa cada vez que ayudas a alguien a comprender, a pronunciar, a creer en sí. Eso <b>ya</b> es propósito.</p>
+      <p>Sobre la tesis: no te pido un maratón, sólo <b>un pasito amable</b>. Cuando esa página exista, celebraremos. Y si hoy el paso es descansar, también cuenta.</p>
+      <div class="divider"></div>
+      <div class="cluster">
+        <button class="btn" data-reveal="#hoy">Para hoy 🫶</button>
+        <button class="btn" data-reveal="#semana">Para esta semana 📆</button>
+        <button class="btn" data-reveal="#respira">Respira conmigo 🌬️</button>
+        <button class="btn" data-reveal="#tesis">Un empujoncito a la tesis 📚</button>
+      </div>
+    </section>
+
+    <section class="card pad letter" id="hoy">
+      <h2>Ritual suave de hoy</h2>
+      <ol style="padding-left:18px; margin:0 0 12px; line-height:1.8">
+        <li>Agüita tibia o té favorito. 💧</li>
+        <li>Algo reconfortante: manta, calcetines, música tranquila. 🧣</li>
+        <li>Escribe en una frase: <i>“¿Qué necesito para estar 5% mejor?”</i></li>
+      </ol>
+      <div class="grid">
+        <div>
+          <h3 style="margin:8px 0">Checklist cariñosa</h3>
+          <div id="todoList"></div>
+          <div class="progress" style="margin-top:12px"><span id="bar"></span></div>
+          <div class="cluster" style="margin-top:10px">
+            <button class="btn" id="addTodo">+ Añadir</button>
+            <button class="btn" id="clearTodo">Limpiar</button>
+          </div>
+        </div>
+        <div>
+          <h3 style="margin:8px 0">Timer de enfoque tierno</h3>
+          <div class="timer">
+            <div class="dial" id="dial"><div class="inner" id="time">10:00</div></div>
+            <div class="cluster">
+              <button class="btn" data-mins="10">10 min</button>
+              <button class="btn" data-mins="5">5 min</button>
+              <button class="btn" id="startTimer">▶️ Iniciar</button>
+              <button class="btn" id="pauseTimer">⏸️ Pausa</button>
+              <button class="btn" id="resetTimer">↺ Reiniciar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card pad letter" id="respira">
+      <h2>Respiremos juntas (4–4)</h2>
+      <p>Inhala 4, sostiene 4, exhala 4, sostiene 4. Repite al menos 3 ciclos y nota cómo baja la tensión.</p>
+      <div class="breath" style="margin-top:8px">
+        <div class="bubble" aria-hidden="true"></div>
+        <div id="breatheCue" class="tag">Inhala</div>
+        <div class="cluster">
+          <button class="btn" id="startBreath">Empezar</button>
+          <button class="btn" id="stopBreath">Detener</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card pad letter" id="tesis">
+      <h2>Un empujoncito amable a la tesis 📚</h2>
+      <p>Piensa en el <b>próximo paso atómico</b> (tan pequeño que no dé pereza). Escríbelo y ponle un recordatorio. Cuando lo marques como hecho, aparece lluvia de corazones. 💗</p>
+      <div class="grid">
+        <div>
+          <label for="pasito">Mi siguiente pasito:</label>
+          <input id="pasito" class="card" style="width:100%; padding:12px; border-radius:14px; border:1px solid rgba(0,0,0,.12)" placeholder="Ej. ‘Esbozar 3 preguntas de investigación’"/>
+          <div class="cluster" style="margin-top:10px">
+            <input type="datetime-local" id="cuando" class="card" style="padding:10px; border-radius:12px; border:1px solid rgba(0,0,0,.12)"/>
+            <button class="btn primary" id="guardarPasito">Guardar</button>
+            <button class="btn" id="hechoPasito">¡Hecho! 🎉</button>
+          </div>
+          <p id="resumenPasito" style="margin-top:8px"></p>
+        </div>
+        <div>
+          <h3 style="margin:8px 0">Afirmaciones para una profe brillante</h3>
+          <div class="card" style="padding:14px; border-radius:16px; border:1px solid rgba(0,0,0,.06)" id="carousel"></div>
+          <div class="cluster" style="margin-top:10px">
+            <button class="btn" id="prevAff">⟵</button>
+            <button class="btn" id="nextAff">⟶</button>
+            <button class="btn" id="shuffleAff">Aleatoria 🔀</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card pad letter" id="semana">
+      <h2>Para esta semana (poquitos, pero con intención)</h2>
+      <ul style="padding-left:18px; line-height:1.9; margin:0">
+        <li>Elegir un rumbo tentativo (no definitivo): <i>¿enseñanza online, coordinación académica, creación de materiales, traducción?</i></li>
+        <li>Prueba de 2 horas: dedicar 2 bloques a ese rumbo y anotar cómo te sentiste.</li>
+        <li>Auto-cuidado: movimiento suave 15–20 min y una comida nutritiva que te guste.</li>
+        <li>Decir “no” a una cosa para decir “sí” a ti.</li>
+      </ul>
+      <div class="cluster" style="margin-top:12px">
+        <button class="btn" id="exportData">Exportar progreso (.json)</button>
+        <label class="btn" style="cursor:pointer">Importar
+          <input type="file" id="importData" accept="application/json" style="display:none"/>
+        </label>
+      </div>
+    </section>
+
+    <footer>Hecho con mucho cariño TE AMOOO.💗</footer>
+  </main>
+
+  <canvas class="confetti" id="confetti" width="0" height="0"></canvas>
+
+  <script>
+    // --- Floating hearts background ---
+    const floaty = document.getElementById('floaty');
+    const makeHeart = () => {
+      const h = document.createElement('div'); h.className='heart';
+      h.style.left = Math.random()*100+'vw';
+      h.style.animationDuration = (8+Math.random()*10)+'s';
+      h.style.opacity = .12 + Math.random()*.25;
+      h.style.transform = `translateY(${100+Math.random()*20}vh) rotate(45deg)`;
+      floaty.appendChild(h);
+      setTimeout(()=>h.remove(),12000);
+    }
+    for(let i=0;i<22;i++) setTimeout(makeHeart, i*400);
+    setInterval(makeHeart, 1200);
+
+    // --- Envelope openers ---
+    const envelope = document.getElementById('envelope');
+    const openLetterBtn = document.getElementById('openLetter');
+    const letter = document.getElementById('letter');
+    function openLetter(){ envelope.classList.add('open'); letter.classList.add('show'); scrollTo({top: letter.offsetTop-80, behavior:'smooth'}) }
+    envelope.addEventListener('click', openLetter);
+    openLetterBtn.addEventListener('click', openLetter);
+    // --- Section reveal buttons ---
+    document.querySelectorAll('[data-reveal]').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        const sel = btn.getAttribute('data-reveal');
+        const el = document.querySelector(sel);
+        if(!el) return; el.classList.toggle('show');
+        if(el.classList.contains('show')) scrollTo({top: el.offsetTop-70, behavior:'smooth'});
+      })
+    })
+
+    // --- Praise ---
+    const compliments = [
+      'Tu ternura también es fuerza.',
+      'Tu voz abre caminos en otros. ✨',
+      'Eres constante incluso cuando dudas de ti.',
+      'Tu manera de enseñar es un regalo.',
+      'Hoy mereces suavidad, descanso y amor.',
+      'Lo pequeño que haces con cariño tiene impacto real.',
+      'Tus ideas importan. Tu bienestar, más todavía.',
+      'Tu ternura también es fuerza.',
+      'Tu voz abre caminos en otros. ✨',
+      'Eres constante incluso cuando dudas de ti.',
+      'Tu manera de enseñar es un regalo.',
+      'Hoy mereces suavidad, descanso y amor.',
+      'Lo pequeño que haces con cariño tiene impacto real.',
+      'Tus ideas importan. Tu bienestar, más todavía.',
+      'La paciencia que siembras en otros también florece en ti.',
+      'Eres más valiosa de lo que a veces alcanzas a ver.',
+      'Tus pausas también son productividad. 🌿',
+      'La forma en que escuchas ya es un acto de amor.',
+      'Incluso en días grises, tu luz se nota.',
+      'Tu sensibilidad es una fortaleza, no una debilidad.',
+      'Aunque avances despacio, sigues avanzando.',
+      'Eres inspiración aunque no lo intentes.',
+      'El mundo se siente más cálido con tu presencia.',
+      'Lo que enseñas deja huellas más largas que las dudas.',
+      'Tienes derecho a descansar sin sentir culpa.',
+      'Eres suficiente tal y como estás hoy. 💜',
+      'Tu forma de cuidar a otros también merece volver hacia ti.'
+    ];
+    document.getElementById('randomPraise').addEventListener('click',()=>{
+      const msg = compliments[Math.floor(Math.random()*compliments.length)];
+      toast(msg, {duration: 70000});
+    });
+
+    // --- Toast ---
+    function toast(text){
+      const t = document.createElement('div');
+      t.textContent = text;
+      t.style.cssText = 'position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 14px;border-radius:12px;box-shadow:0 10px 24px rgba(0,0,0,.2); z-index:50; max-width:90vw; text-align:center';
+      document.body.appendChild(t);
+      setTimeout(()=>{t.style.transition='opacity .5s'; t.style.opacity='0'; setTimeout(()=>t.remove(),600)}, 1800);
+    }
+
+    // --- Checklist ---
+    const todoList = document.getElementById('todoList');
+    const bar = document.getElementById('bar');
+    const state = JSON.parse(localStorage.getItem('cartaState')||'{}');
+    state.todos ||= [
+      {text:'Té o agua tibia', done:false},
+      {text:'Descansar 10 minutos sin pantalla', done:false},
+      {text:'Escribir 1 frase sobre cómo me siento', done:false},
+    ];
+
+    function renderTodos(){
+      todoList.innerHTML='';
+      state.todos.forEach((t,i)=>{
+        const div = document.createElement('div'); div.className='todo-item'+(t.done?' done':'');
+        div.innerHTML = `<input type="checkbox" ${t.done?'checked':''} aria-label="${t.text}"> <span contenteditable="true">${t.text}</span> <span style="margin-left:auto"></span> <button class="btn" aria-label="Eliminar">🗑️</button>`;
+        const [chk, span, , del] = div.querySelectorAll('input,span,span,button');
+        chk.addEventListener('change',()=>{t.done=chk.checked; save(); renderTodos(); if(t.done) confettiBurst()});
+        span.addEventListener('input',()=>{t.text=span.textContent; save()});
+        del.addEventListener('click',()=>{state.todos.splice(i,1); save(); renderTodos()});
+        todoList.appendChild(div);
+      })
+      const total = state.todos.length || 1; const done = state.todos.filter(t=>t.done).length; const pct = Math.round(100*done/total);
+      bar.style.width = pct+'%';
+    }
+    function save(){ localStorage.setItem('cartaState', JSON.stringify(state)) }
+    document.getElementById('addTodo').addEventListener('click',()=>{ state.todos.push({text:'Nuevo pasito', done:false}); save(); renderTodos() })
+    document.getElementById('clearTodo').addEventListener('click',()=>{ state.todos = []; save(); renderTodos() })
+    renderTodos();
+
+    // --- Timer ---
+    let timer=null, totalSecs=600, leftSecs=600, paused=true;
+    const timeEl = document.getElementById('time');
+    const dial = document.getElementById('dial');
+    function fmt(s){const m=Math.floor(s/60), ss=String(s%60).padStart(2,'0'); return `${m}:${ss}`}
+    function setMins(m){ totalSecs = leftSecs = m*60; updateDial(); timeEl.textContent = fmt(leftSecs) }
+    function updateDial(){ const pct = 100*(1-leftSecs/totalSecs); dial.style.setProperty('--pct', pct.toFixed(2)) }
+    function tick(){ if(paused) return; leftSecs--; if(leftSecs<=0){ paused=true; leftSecs=0; updateDial(); timeEl.textContent='¡Bien!'; confettiBurst(); toast('Bloque completado 💗'); clearInterval(timer); return } timeEl.textContent = fmt(leftSecs); updateDial() }
+    document.querySelectorAll('.timer [data-mins]').forEach(b=>b.addEventListener('click',()=>setMins(+b.dataset.mins)));
+    document.getElementById('startTimer').addEventListener('click',()=>{ if(!timer) timer=setInterval(tick,1000); paused=false })
+    document.getElementById('pauseTimer').addEventListener('click',()=>{ paused=true })
+    document.getElementById('resetTimer').addEventListener('click',()=>{ paused=true; leftSecs=totalSecs; timeEl.textContent=fmt(leftSecs); updateDial() })
+
+    // --- Breathing coach ---
+    const cue = document.getElementById('breatheCue');
+    let breathInt=null, step=0;
+    function breatheStart(){
+      clearInterval(breathInt); step=0; cue.textContent='Inhala';
+      breathInt = setInterval(()=>{
+        step=(step+1)%4;
+        cue.textContent = ['Inhala','Sostén','Exhala','Sostén'][step];
+      }, 4000)
+    }
+    function breatheStop(){ clearInterval(breathInt); cue.textContent='Inhala' }
+    document.getElementById('startBreath').addEventListener('click',breatheStart);
+    document.getElementById('stopBreath').addEventListener('click',breatheStop);
+
+    // --- Thesis nudge ---
+    const pasito = document.getElementById('pasito');
+    const cuando = document.getElementById('cuando');
+    const resumen = document.getElementById('resumenPasito');
+    const S2 = JSON.parse(localStorage.getItem('pasitoState')||'{}');
+    if(S2.text) pasito.value=S2.text; if(S2.when) cuando.value=S2.when; if(S2.text) resumen.textContent = `Paso guardado: “${S2.text}” ${S2.when? ' • Recordatorio: '+new Date(S2.when).toLocaleString() : ''}`
+    document.getElementById('guardarPasito').addEventListener('click',()=>{
+      const text = pasito.value.trim(); const when = cuando.value; if(!text){toast('Escribe un pasito pequeñito 📌'); return}
+      localStorage.setItem('pasitoState', JSON.stringify({text, when})); resumen.textContent = `Paso guardado: “${text}” ${when? ' • Recordatorio: '+new Date(when).toLocaleString() : ''}`; toast('Guardado 💾')
+    });
+    document.getElementById('hechoPasito').addEventListener('click',()=>{ confettiBurst(); toast('¡Orgullo de ti! 🎉') })
+
+    // --- Affirmations carousel ---
+    const aff = [
+      'Sé paciente contigo como lo eres con tus estudiantes.',
+      'Hoy puedo ir lento y aun así avanzar.',
+      'Mi voz y mi mirada pedagógica tienen valor propio.',
+      'Mi tesis puede crecer a pasitos pequeños.',
+      'La duda no me define; mis esfuerzos sí.',
+      'El descanso también es productivo para mi cuerpo y mi mente.',
+      'No tengo que tener todas las respuestas hoy.',
+    ];
+    let idx=0; const car = document.getElementById('carousel');
+    function paintAff(){ car.textContent = '“'+aff[idx]+'”' }
+    paintAff();
+    document.getElementById('prevAff').addEventListener('click',()=>{ idx=(idx-1+aff.length)%aff.length; paintAff() })
+    document.getElementById('nextAff').addEventListener('click',()=>{ idx=(idx+1)%aff.length; paintAff() })
+    document.getElementById('shuffleAff').addEventListener('click',()=>{ idx=Math.floor(Math.random()*aff.length); paintAff() })
+    setInterval(()=>{ idx=(idx+1)%aff.length; paintAff() }, 6000);
+
+    // --- Export/Import ---
+    document.getElementById('exportData').addEventListener('click',()=>{
+      const data = {todos: state.todos, pasito: JSON.parse(localStorage.getItem('pasitoState')||'{}')};
+      const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+      const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='carta-progreso.json'; a.click(); URL.revokeObjectURL(a.href);
+    })
+    document.getElementById('importData').addEventListener('change', (e)=>{
+      const file = e.target.files[0]; if(!file) return; const r=new FileReader(); r.onload=()=>{
+        try{ const data = JSON.parse(r.result); if(data.todos){ state.todos=data.todos; save(); renderTodos() } if(data.pasito){ localStorage.setItem('pasitoState', JSON.stringify(data.pasito)); location.reload() } toast('Progreso importado ✅') }
+        catch(err){ toast('Archivo no válido') }
+      }; r.readAsText(file);
+    })
+
+    // --- Theme toggle ---
+    const toggle = document.getElementById('toggleTheme');
+    toggle.addEventListener('click',()=>{
+      const dark = document.body.dataset.dark==='1';
+      document.body.dataset.dark = dark? '0':'1';
+      document.body.style.background = dark? 'linear-gradient(180deg,var(--bg),#ffffff)' : 'linear-gradient(180deg,#1b1620,#2a2033)';
+      document.body.style.color = dark? 'var(--ink)':'#f3ee';
+      document.querySelectorAll('.card').forEach(c=>{ c.style.background = dark? 'var(--card)':'#2b2237'; c.style.borderColor = dark? '#f3ee':'#f3ee'; c.style.color = dark? '#f3ee':'#f3ee'; });
+      document.querySelectorAll('p').forEach(p => {p.style.color = dark ? 'var(--ink-muted)' : '#f3ee';});
+      //document.querySelectorAll('input').forEach(p => {input.style.border = "1px solid '#f3ee'";});
+      
+    })
+
+    document.getElementById('printBtn').addEventListener('click',()=>window.print());
+
+    // --- Confetti hearts ---
+    const conf = document.getElementById('confetti');
+    function confettiBurst(){
+      const ctx = ensureCanvas();
+      const parts = Array.from({length: 60}, ()=>({
+        x: innerWidth/2, y: innerHeight/2, vx: (Math.random()-.5)*6, vy: -Math.random()*5-2, g: .12+Math.random()*.05, r: 6+Math.random()*6, life: 60+Math.random()*40
+      }));
+      let frame=0;
+      const id = setInterval(()=>{
+        ctx.clearRect(0,0,conf.width,conf.height);
+        parts.forEach(p=>{
+          p.vy+=p.g; p.x+=p.vx; p.y+=p.vy; p.life--; drawHeart(ctx,p.x,p.y,p.r);
+        });
+        frame++; if(frame>120) {clearInterval(id); ctx.clearRect(0,0,conf.width,conf.height)}
+      }, 16);
+    }
+    function ensureCanvas(){ conf.width = innerWidth; conf.height = innerHeight; return conf.getContext('2d') }
+    function drawHeart(ctx,x,y,r){
+      ctx.save(); ctx.translate(x,y); ctx.rotate(Math.PI/4); const s = ctx.createLinearGradient(-r,-r,r,r); s.addColorStop(0,'#ffc2d6'); s.addColorStop(1,'#e66794'); ctx.fillStyle=s;
+      ctx.fillRect(-r/2,-r/2,r,r); // center diamond
+      ctx.beginPath(); ctx.arc(-r/2, -r/2, r/2, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(r/2, -r/2, r/2, 0, Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+  </script>
+</body>
+</html>
