@@ -66,6 +66,11 @@
       font-size: 14px;
       color: #999;
     }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1);    box-shadow: 0 8px 15px rgba(0,0,0,0.15); }
+      50%       { transform: scale(1.04); box-shadow: 0 12px 28px rgba(255,77,141,0.45); }
+    }
   </style>
 </head>
 
@@ -75,6 +80,7 @@
     <p>Que quieres ver?</p>
 
     <div class="menu">
+      <a class="btn" href="Cumpleanos/index.html" style="background: linear-gradient(135deg, #ff4d8d, #c264fe); animation: pulse 1.8s ease-in-out infinite;">🎂 ¡Feliz Cumpleaños!</a>
       <a class="btn" href="Carta/index.html">💌 Carta de amor</a>
       <a class="btn" href="flores/index.html">🌼 Flores de septiembre aunque no te gusten</a>
       <a class="btn" href="Calma/index.html">💜 Recuerda lo mucho que vales como persona</a>
