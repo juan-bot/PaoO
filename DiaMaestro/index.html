@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>¡Feliz Día del Maestro, Mi Amor! 🍎</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal:       #00c9a7;
+      --teal-light: #5ef0d3;
+      --teal-pale:  #ccfaf3;
+      --amber:      #ffbe00;
+      --amber-dark: #e09600;
+      --rose:       #ff6b9d;
+      --white:      #fff;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(135deg, #003d30 0%, #005c48 40%, #014a3a 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      padding: 24px;
+    }
+
+    /* ── Partículas flotantes ── */
+    .particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .particle {
+      position: absolute;
+      font-size: var(--size, 1.4rem);
+      opacity: 0;
+      animation: floatUp var(--dur, 8s) ease-in infinite var(--delay, 0s);
+      left: var(--left, 50%);
+    }
+    @keyframes floatUp {
+      0%   { opacity: 0;   transform: translateY(110vh) rotate(0deg); }
+      10%  { opacity: 0.9; }
+      90%  { opacity: 0.7; }
+      100% { opacity: 0;   transform: translateY(-10vh) rotate(360deg); }
+    }
+
+    /* ── Tarjeta ── */
+    .card {
+      position: relative;
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(22px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 32px;
+      padding: 52px 44px 44px;
+      max-width: 700px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.5), 0 0 70px rgba(0,201,167,0.15);
+      animation: cardIn 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(50px) scale(0.94); }
+      to   { opacity: 1; transform: translateY(0)    scale(1);    }
+    }
+
+    /* ── Manzana animada ── */
+    .apple {
+      font-size: 5.5rem;
+      display: inline-block;
+      animation: float 3s ease-in-out infinite alternate;
+      filter: drop-shadow(0 10px 20px rgba(0,201,167,0.45));
+    }
+    @keyframes float {
+      from { transform: translateY(0) rotate(-4deg); }
+      to   { transform: translateY(-14px) rotate(4deg); }
+    }
+
+    /* ── Fila de emojis ── */
+    .icons-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      font-size: 2rem;
+      margin: 14px 0;
+      animation: sway 4s ease-in-out infinite alternate;
+    }
+    @keyframes sway {
+      from { transform: rotate(-2deg); }
+      to   { transform: rotate(2deg); }
+    }
+
+    /* ── Título ── */
+    h1 {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(2.2rem, 7vw, 3.6rem);
+      color: var(--white);
+      text-shadow: 0 2px 20px rgba(0,201,167,0.7), 0 0 50px rgba(255,190,0,0.3);
+      margin: 10px 0 4px;
+      line-height: 1.15;
+    }
+
+    .subtitle {
+      font-size: 1.05rem;
+      color: var(--teal-light);
+      margin-bottom: 28px;
+      letter-spacing: 0.6px;
+    }
+
+    /* ── Divisor ── */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0 auto 28px;
+      max-width: 320px;
+      color: var(--teal-light);
+      font-size: 1.1rem;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--teal-light), transparent);
+    }
+
+    /* ── Mensaje ── */
+    .message {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 22px;
+      padding: 30px 30px;
+      text-align: left;
+      margin-bottom: 30px;
+    }
+    .message p {
+      color: rgba(255,255,255,0.88);
+      font-size: 1.05rem;
+      line-height: 1.8;
+      margin-bottom: 14px;
+    }
+    .message p:last-child { margin-bottom: 0; }
+
+    .message p strong {
+      color: var(--teal-light);
+    }
+
+    /* ── Estrella destello ── */
+    .star-line {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      font-size: 1.6rem;
+      margin-bottom: 28px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50%       { transform: scale(1.07); }
+    }
+
+    /* ── Badge especial ── */
+    .badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--amber), var(--amber-dark));
+      color: #1a0000;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 10px 24px;
+      border-radius: 50px;
+      letter-spacing: 0.8px;
+      box-shadow: 0 6px 20px rgba(255,190,0,0.4);
+      margin-bottom: 30px;
+      animation: badgePop 0.8s cubic-bezier(0.22,1,0.36,1) 0.6s both;
+    }
+    @keyframes badgePop {
+      from { opacity: 0; transform: scale(0.7); }
+      to   { opacity: 1; transform: scale(1);   }
+    }
+
+    /* ── Firma ── */
+    .signature {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.5rem;
+      color: var(--rose);
+      text-shadow: 0 0 20px rgba(255,107,157,0.5);
+      margin-bottom: 28px;
+    }
+
+    /* ── Botón volver ── */
+    .back-btn {
+      display: inline-block;
+      text-decoration: none;
+      padding: 14px 34px;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--teal), #00a087);
+      color: var(--white);
+      box-shadow: 0 8px 24px rgba(0,201,167,0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .back-btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 32px rgba(0,201,167,0.55);
+    }
+
+    /* ── Canvas confetti ── */
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Partículas flotantes -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Confetti canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="card">
+
+    <div class="apple">🍎</div>
+
+    <div class="icons-row">📚 ✏️ 🏫 ⭐ 🎓</div>
+
+    <h1>¡Feliz Día del Maestro,<br>mi amor! 🌟</h1>
+    <p class="subtitle">15 de mayo — Un día hecho para personas como tú</p>
+
+    <div class="divider">🍎</div>
+
+    <div class="badge">🏆 La mejor maestra del mundo</div>
+
+    <div class="message">
+      <p>
+        Hay personas que eligen su trabajo, y hay personas que <strong>nacieron para lo que hacen</strong>.
+        Tú eres de las segundas. Desde que te conozco, cada vez que hablas de tus alumnos,
+        de tus clases, de ese salón que es tuyo — tus ojos cambian. Brillan diferente.
+        Y eso no se finge, eso se siente.
+      </p>
+      <p>
+        He visto cómo llegas cansada y aun así preparas la clase del día siguiente.
+        He visto que te preocupas por cada uno de ellos como si fueran tuyos.
+        He visto la maestra que eres… y me enamora todo lo que veo.
+        <strong>No hay nadie como tú.</strong>
+      </p>
+      <p>
+        Tus alumnos no saben todavía la suerte que tienen. Pero yo sí lo sé.
+        Yo tengo la suerte más grande: <strong>quererte</strong>.
+        De admirarte no solo cuando estás frente a un grupo, sino en cada pequeña cosa
+        que haces con tanta entrega y tanto corazón.
+      </p>
+      <p>
+        Hoy el mundo celebra a los maestros, pero yo te celebro a ti todos los días.
+        Por lo que eres dentro del salón y por lo que eres cuando estás conmigo. 💚
+      </p>
+    </div>
+
+    <div class="star-line">⭐ ⭐ ⭐ ⭐ ⭐</div>
+
+    <div class="signature">Con todo mi amor, tu persona favorita 💕</div>
+
+  </div>
+
+  <script>
+    // ── Partículas flotantes ──
+    const emojis = ['🍎','✏️','📚','⭐','🎓','📝','🌟','💚','🏫'];
+    const container = document.getElementById('particles');
+    for (let i = 0; i < 28; i++) {
+      const el = document.createElement('span');
+      el.className = 'particle';
+      el.textContent = emojis[i % emojis.length];
+      const size = (Math.random() * 1.2 + 0.9).toFixed(2);
+      el.style.setProperty('--size', size + 'rem');
+      el.style.setProperty('--dur',  (Math.random() * 7 + 6).toFixed(1) + 's');
+      el.style.setProperty('--delay',(Math.random() * 8).toFixed(1) + 's');
+      el.style.setProperty('--left', (Math.random() * 100).toFixed(1) + '%');
+      container.appendChild(el);
+    }
+
+    // ── Confetti ──
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx    = canvas.getContext('2d');
+    const colors = ['#00c9a7','#ffbe00','#ff6b9d','#5ef0d3','#ffffff','#a0ffe8'];
+    let pieces   = [];
+
+    function resize() {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    function spawnBurst() {
+      for (let i = 0; i < 120; i++) {
+        pieces.push({
+          x:   Math.random() * canvas.width,
+          y:   Math.random() * canvas.height * 0.4,
+          vx:  (Math.random() - 0.5) * 5,
+          vy:  Math.random() * 3 + 1,
+          size: Math.random() * 7 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: 1,
+          rot:   Math.random() * 360,
+          rotV:  (Math.random() - 0.5) * 6,
+        });
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      pieces = pieces.filter(p => p.alpha > 0.02);
+      for (const p of pieces) {
+        ctx.save();
+        ctx.globalAlpha = p.alpha;
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot * Math.PI / 180);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.5);
+        ctx.restore();
+        p.x   += p.vx;
+        p.y   += p.vy;
+        p.vy  += 0.05;
+        p.rot += p.rotV;
+        p.alpha -= 0.008;
+      }
+      requestAnimationFrame(draw);
+    }
+
+    spawnBurst();
+    setTimeout(spawnBurst, 1800);
+    draw();
+  </script>
+
+</body>
+</html>
